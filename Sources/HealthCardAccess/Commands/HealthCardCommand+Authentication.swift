@@ -185,7 +185,7 @@ extension HealthCardCommand {
         /// Verify/Exchange token - step4a #14.7.2.1.4
         /// - Parameter token: Exchange token. Must be 8 bytes long
         /// - Returns: Step 4a command
-        public static func step4a(token: Data) throws -> HealthCardCommand {
+        public static func step4a(token: Data, responseStatuses: [UInt16 : ResponseStatus] = [:]) throws -> HealthCardCommand {
             guard token.count == 8 else {
                 throw HealthCardCommandBuilder.InvalidArgument.illegalSize(token.count, expected: 8)
             }
@@ -209,14 +209,16 @@ extension HealthCardCommand {
             )
         }
 
-        private static func builder() -> HealthCardCommandBuilder {
-            HealthCardCommandBuilder()
+        private static func builder(responseStatuses: [UInt16 : ResponseStatus] = [:]) -> HealthCardCommandBuilder {
+            let mergedResponseStatuses = [ResponseStatus.success.code: .success].merging(responseStatuses) { (current, _) in current }
+            
+            return HealthCardCommandBuilder()
                 .set(cla: 0x10)
                 .set(ins: 0x86)
                 .set(p1: 0x0)
                 .set(p2: 0x0)
                 .set(ne: 0)
-                .set(responseStatuses: [ResponseStatus.success.code: .success])
+                .set(responseStatuses: mergedResponseStatuses)
         }
 
         /// Start PACE General authenticate - step 1b #14.7.2.4.1

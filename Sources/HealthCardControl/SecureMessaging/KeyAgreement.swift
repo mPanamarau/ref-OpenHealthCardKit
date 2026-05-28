@@ -509,12 +509,18 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
             algorithm: algorithm
         )
         let macPcdToken = macPcd.prefix(algorithm.macTokenPrefixSize)
-        let paceStep4aCommand = try HealthCardCommand.PACE.step4a(token: macPcdToken)
+        let paceStep4aCommand = try HealthCardCommand.PACE.step4a(
+            token: macPcdToken,
+            responseStatuses: [ResponseStatus.authenticationFailure.code: .authenticationFailure]
+        )
         let macPiccResponse = try await paceStep4aCommand.transmit(
             to: card,
             writeTimeout: writeTimeout,
             readTimeout: readTimeout
         )
+        if macPiccResponse.responseStatus == .authenticationFailure {
+            throw Error.macPcdVerificationFailedOnCard
+        }
         if macPiccResponse.responseStatus != .success {
             throw Error.macPcdVerificationFailedOnCard
         }
