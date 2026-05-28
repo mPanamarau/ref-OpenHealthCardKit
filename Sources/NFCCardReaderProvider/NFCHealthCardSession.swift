@@ -116,6 +116,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
     private typealias OperationCheckedContinuation = CheckedContinuation<Output, Error>
     private var operationContinuation: OperationCheckedContinuation?
     private let continuationLock = NSLock()
+    private let tagDetected: () -> Void
 
     private let messages: Messages
     private let can: String
@@ -141,11 +142,13 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
         on queue: DispatchQueue = .global(qos: .userInitiated),
         messages: Messages,
         can: String,
+        tagDetected: @escaping () -> Void = {},
         operation: @escaping ((NFCHealthCardSessionHandle) async throws -> Output)
     ) {
         self.messages = messages
         self.can = can
         self.operation = operation
+        self.tagDetected = tagDetected
         super.init()
 
         guard let mNFCReaderSession = NFCTagReaderSession(
@@ -238,6 +241,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
 
     // swiftlint:disable:next function_body_length
     public func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
+        self.tagDetected()
         Logger.nfcCardReaderProvider.debug("tagReaderSession:didDetect - [\(tags)]")
         if tags.count > 1 {
             session.alertMessage = messages.multipleCardsMessage
