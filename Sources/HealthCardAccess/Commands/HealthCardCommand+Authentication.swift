@@ -191,7 +191,7 @@ extension HealthCardCommand {
             }
 
             let data = derEncoded(objects: [(data: token, tag: .taggedTag(5))])
-            return try builder()
+            return try builder(responseStatuses: responseStatuses)
                 .set(cla: 0x0)
                 .set(data: try data.serialize())
                 .build()
