@@ -27,10 +27,10 @@ public protocol HealthCardResponseType: ResponseType {
 }
 
 extension HealthCardResponseType {
-    static func from(response: ResponseType, for command: HealthCardCommandType) -> HealthCardResponseType {
+    static func from(response: ResponseType, for command: HealthCardCommandType, provideSW: Bool = false) -> HealthCardResponseType {
         HealthCardResponse(
             response: response,
-            responseStatus: command.responseStatus(from: response.sw)
+            responseStatus: command.responseStatus(from: response.sw, provideSW: provideSW)
         )
     }
 }

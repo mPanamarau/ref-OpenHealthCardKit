@@ -31,14 +31,18 @@ public protocol HealthCardCommandType: CommandType {
 extension HealthCardCommandType {
     /// Returns context specific `ResponseStatus` from a UInt16 code (like 0x9000, 0x6400, ...)
     /// - Returns: `ResponseStatus`
-    public func responseStatus(from code: UInt16) -> ResponseStatus {
+    public func responseStatus(from code: UInt16, provideSW: Bool = false) -> ResponseStatus {
         if let status = responseStatuses[code] {
             return status
         } else if code == ResponseStatus.channelClosed.code {
             return .channelClosed
         } else {
-            return .customError
-        }
+            if provideSW {
+                return .unknownError(code)
+            } else {
+                return .customError
+            }
+        } 
     }
 
     /// Execute the command on a given card
@@ -136,9 +140,10 @@ extension HealthCardCommandType {
     public func transmit(
         to card: HealthCardType,
         writeTimeout: TimeInterval = 0,
-        readTimeout: TimeInterval = 0
+        readTimeout: TimeInterval = 0,
+        provideSW: Bool = false
     ) async throws -> HealthCardResponseType {
-        try await transmit(on: card.currentCardChannel, writeTimeout: writeTimeout, readTimeout: readTimeout)
+        try await transmit(on: card.currentCardChannel, writeTimeout: writeTimeout, readTimeout: readTimeout, provideSW: provideSW)
     }
 
     /// Execute the command on a given channel
@@ -150,13 +155,14 @@ extension HealthCardCommandType {
     public func transmit(
         on channel: CardChannelType,
         writeTimeout: TimeInterval = 0,
-        readTimeout: TimeInterval = 0
+        readTimeout: TimeInterval = 0,
+        provideSW: Bool = false
     ) async throws -> HealthCardResponseType {
         let response = try await channel.transmitAsync(
             command: self,
             writeTimeout: writeTimeout,
             readTimeout: readTimeout
         )
-        return HealthCardResponse.from(response: response, for: self)
+        return HealthCardResponse.from(response: response, for: self, provideSW: provideSW)
     }
 }

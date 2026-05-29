@@ -288,7 +288,11 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
                 session.invalidate(errorMessage: error.localizedDescription)
                 return
             } catch HealthCardControl.KeyAgreement.Error.macPcdVerificationFailedOnCard {
-                safeResumeContinuation(with: .failure(NFCHealthCardSessionError.wrongCAN))
+                safeResumeContinuation(with: .failure(NFCHealthCardSessionError.wrongCAN(nil)))
+                session.invalidate(errorMessage: messages.wrongCardAccessNumberMessage ?? messages.noCardMessage)
+                return
+            } catch HealthCardControl.KeyAgreement.Error.macPcdVerificationFailedOnCardSW(let sw) {
+                safeResumeContinuation(with: .failure(NFCHealthCardSessionError.wrongCAN(sw)))
                 session.invalidate(errorMessage: messages.wrongCardAccessNumberMessage ?? messages.noCardMessage)
                 return
             } catch {
@@ -333,7 +337,7 @@ public enum NFCHealthCardSessionError: Swift.Error {
 
     /// Signifies that the provided CAN (Card Access Number) is incorrect or failed verification, preventing
     /// establishment of a secure channel. It's a common sub case of the `establishingSecureChannel` error.
-    case wrongCAN
+    case wrongCAN(UInt16?)
 
     /// Occurs when establishing a secure channel with the health card fails. This includes errors during key agreement,
     /// authentication, or other security protocol failures.

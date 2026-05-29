@@ -38,6 +38,7 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
         case noValidHealthCardStatus
         case efCardAccessNotAvailable
         case unsupportedKeyAgreementAlgorithm(ASN1Kit.ObjectIdentifier)
+        case macPcdVerificationFailedOnCardSW(UInt16)
     }
 
     /// Algorithm the PACE key agreement negotiation is based on.
@@ -514,12 +515,15 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
         let macPcdToken = macPcd.prefix(algorithm.macTokenPrefixSize)
         let paceStep4aCommand = try HealthCardCommand.PACE.step4a(
             token: macPcdToken,
-            responseStatuses: [ResponseStatus.authenticationFailure.code: .authenticationFailure]
+            responseStatuses: [
+                ResponseStatus.ok.code: .ok
+            ],
         )
         let macPiccResponse = try await paceStep4aCommand.transmit(
             to: card,
             writeTimeout: writeTimeout,
-            readTimeout: readTimeout
+            readTimeout: readTimeout,
+            provideSW: true
         )
         
         if macPiccResponse.responseStatus == .success {
@@ -527,6 +531,9 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
         } else if macPiccResponse.responseStatus == .ok, let force9900AsSuccess {
             force9900AsSuccess()
         } else {
+            if case let .unknownError(sw) = macPiccResponse.responseStatus {
+                throw Error.macPcdVerificationFailedOnCardSW(sw)
+            }
             if macPiccResponse.responseStatus != .success {
                 throw Error.macPcdVerificationFailedOnCard
             }

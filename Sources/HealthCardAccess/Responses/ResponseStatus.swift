@@ -22,7 +22,252 @@ import Foundation
 
 /// Named response statuses per UInt16 status code.
 /// - Remark: Depending on the context a UInt16 status code can have different meanings.
-public enum ResponseStatus {
+public enum ResponseStatus: Equatable {
+    
+    public static func ==(lhs: ResponseStatus, rhs: ResponseStatus) -> Bool {
+        switch (lhs, rhs) {
+        case let (.unknownError(lhsSW), .unknownError(rhsSW)):
+            return lhsSW == rhsSW
+        case (.success, .success):
+            return true
+        case (.unknownException, .unknownException):
+            return true
+        case (.unknownStatus, .unknownStatus):
+            return true
+        case (.dataTruncated, .dataTruncated):
+            return true
+        case (.corruptDataWarning, .corruptDataWarning):
+            return true
+        case (.endOfFileWarning, .endOfFileWarning):
+            return true
+        case (.endOfRecordWarning, .endOfRecordWarning):
+            return true
+        case (.unsuccessfulSearch, .unsuccessfulSearch):
+            return true
+        case (.fileDeactivated, .fileDeactivated):
+            return true
+        case (.fileTerminated, .fileTerminated):
+            return true
+        case (.recordDeactivated, .recordDeactivated):
+            return true
+        case (.transportStatusTransportPin, .transportStatusTransportPin):
+            return true
+        case (.transportStatusEmptyPin, .transportStatusEmptyPin):
+            return true
+        case (.passwordDisabled, .passwordDisabled):
+            return true
+        case (.authenticationFailure, .authenticationFailure):
+            return true
+        case (.noAuthentication, .noAuthentication):
+            return true
+        case (.retryCounterCount00, .retryCounterCount00):
+            return true
+        case (.retryCounterCount01, .retryCounterCount01):
+            return true
+        case (.retryCounterCount02, .retryCounterCount02):
+            return true
+        case (.retryCounterCount03, .retryCounterCount03):
+            return true
+        case (.retryCounterCount04, .retryCounterCount04):
+            return true
+        case (.retryCounterCount05, .retryCounterCount05):
+            return true
+        case (.retryCounterCount06, .retryCounterCount06):
+            return true
+        case (.retryCounterCount07, .retryCounterCount07):
+            return true
+        case (.retryCounterCount08, .retryCounterCount08):
+            return true
+        case (.retryCounterCount09, .retryCounterCount09):
+            return true
+        case (.retryCounterCount10, .retryCounterCount10):
+            return true
+        case (.retryCounterCount11, .retryCounterCount11):
+            return true
+        case (.retryCounterCount12, .retryCounterCount12):
+            return true
+        case (.retryCounterCount13, .retryCounterCount13):
+            return true
+        case (.retryCounterCount14, .retryCounterCount14):
+            return true
+        case (.retryCounterCount15, .retryCounterCount15):
+            return true
+        case (.updateRetryWarningCount00, .updateRetryWarningCount00):
+            return true
+        case (.updateRetryWarningCount01, .updateRetryWarningCount01):
+            return true
+        case (.updateRetryWarningCount02, .updateRetryWarningCount02):
+            return true
+        case (.updateRetryWarningCount03, .updateRetryWarningCount03):
+            return true
+        case (.updateRetryWarningCount04, .updateRetryWarningCount04):
+            return true
+        case (.updateRetryWarningCount05, .updateRetryWarningCount05):
+            return true
+        case (.updateRetryWarningCount06, .updateRetryWarningCount06):
+            return true
+        case (.updateRetryWarningCount07, .updateRetryWarningCount07):
+            return true
+        case (.updateRetryWarningCount08, .updateRetryWarningCount08):
+            return true
+        case (.updateRetryWarningCount09, .updateRetryWarningCount09):
+            return true
+        case (.updateRetryWarningCount10, .updateRetryWarningCount10):
+            return true
+        case (.updateRetryWarningCount11, .updateRetryWarningCount11):
+            return true
+        case (.updateRetryWarningCount12, .updateRetryWarningCount12):
+            return true
+        case (.updateRetryWarningCount13, .updateRetryWarningCount13):
+            return true
+        case (.updateRetryWarningCount14, .updateRetryWarningCount14):
+            return true
+        case (.updateRetryWarningCount15, .updateRetryWarningCount15):
+            return true
+        case (.wrongSecretWarningCount00, .wrongSecretWarningCount00):
+            return true
+        case (.wrongSecretWarningCount01, .wrongSecretWarningCount01):
+            return true
+        case (.wrongSecretWarningCount02, .wrongSecretWarningCount02):
+            return true
+        case (.wrongSecretWarningCount03, .wrongSecretWarningCount03):
+            return true
+        case (.wrongSecretWarningCount04, .wrongSecretWarningCount04):
+            return true
+        case (.wrongSecretWarningCount05, .wrongSecretWarningCount05):
+            return true
+        case (.wrongSecretWarningCount06, .wrongSecretWarningCount06):
+            return true
+        case (.wrongSecretWarningCount07, .wrongSecretWarningCount07):
+            return true
+        case (.wrongSecretWarningCount08, .wrongSecretWarningCount08):
+            return true
+        case (.wrongSecretWarningCount09, .wrongSecretWarningCount09):
+            return true
+        case (.wrongSecretWarningCount10, .wrongSecretWarningCount10):
+            return true
+        case (.wrongSecretWarningCount11, .wrongSecretWarningCount11):
+            return true
+        case (.wrongSecretWarningCount12, .wrongSecretWarningCount12):
+            return true
+        case (.wrongSecretWarningCount13, .wrongSecretWarningCount13):
+            return true
+        case (.wrongSecretWarningCount14, .wrongSecretWarningCount14):
+            return true
+        case (.wrongSecretWarningCount15, .wrongSecretWarningCount15):
+            return true
+        case (.encipherError, .encipherError):
+            return true
+        case (.keyInvalid, .keyInvalid):
+            return true
+        case (.objectTerminated, .objectTerminated):
+            return true
+        case (.parameterMismatch, .parameterMismatch):
+            return true
+        case (.memoryFailure, .memoryFailure):
+            return true
+        case (.wrongRecordLength, .wrongRecordLength):
+            return true
+        case (.channelClosed, .channelClosed):
+            return true
+        case (.noMoreChannelsAvailable, .noMoreChannelsAvailable):
+            return true
+        case (.volatileKeyWithoutLcs, .volatileKeyWithoutLcs):
+            return true
+        case (.wrongFileType, .wrongFileType):
+            return true
+        case (.securityStatusNotSatisfied, .securityStatusNotSatisfied):
+            return true
+        case (.commandBlocked, .commandBlocked):
+            return true
+        case (.keyExpired, .keyExpired):
+            return true
+        case (.passwordBlocked, .passwordBlocked):
+            return true
+        case (.keyAlreadyPresent, .keyAlreadyPresent):
+            return true
+        case (.noKeyReference, .noKeyReference):
+            return true
+        case (.noPrkReference, .noPrkReference):
+            return true
+        case (.noPukReference, .noPukReference):
+            return true
+        case (.noRandom, .noRandom):
+            return true
+        case (.noRecordLifeCycleStatus, .noRecordLifeCycleStatus):
+            return true
+        case (.passwordNotUsable, .passwordNotUsable):
+            return true
+        case (.wrongRandomLength, .wrongRandomLength):
+            return true
+        case (.wrongRandomOrNoKeyReference, .wrongRandomOrNoKeyReference):
+            return true
+        case (.wrongPasswordLength, .wrongPasswordLength):
+            return true
+        case (.noCurrentEf, .noCurrentEf):
+            return true
+        case (.incorrectSmDo, .incorrectSmDo):
+            return true
+        case (.newFileSizeWrong, .newFileSizeWrong):
+            return true
+        case (.numberPreconditionWrong, .numberPreconditionWrong):
+            return true
+        case (.numberScenarioWrong, .numberScenarioWrong):
+            return true
+        case (.verificationError, .verificationError):
+            return true
+        case (.wrongCipherText, .wrongCipherText):
+            return true
+        case (.wrongToken, .wrongToken):
+            return true
+        case (.unsupportedFunction, .unsupportedFunction):
+            return true
+        case (.fileNotFound, .fileNotFound):
+            return true
+        case (.recordNotFound, .recordNotFound):
+            return true
+        case (.dataTooBig, .dataTooBig):
+            return true
+        case (.fullRecordList, .fullRecordList):
+            return true
+        case (.messageTooLong, .messageTooLong):
+            return true
+        case (.outOfMemory, .outOfMemory):
+            return true
+        case (.fullRecordListOrOutOfMemory, .fullRecordListOrOutOfMemory):
+            return true
+        case (.inconsistentKeyReference, .inconsistentKeyReference):
+            return true
+        case (.wrongKeyReference, .wrongKeyReference):
+            return true
+        case (.keyNotFound, .keyNotFound):
+            return true
+        case (.keyOrPrkNotFound, .keyOrPrkNotFound):
+            return true
+        case (.keyOrPwdNotFound, .keyOrPwdNotFound):
+            return true
+        case (.passwordNotFound, .passwordNotFound):
+            return true
+        case (.prkNotFound, .prkNotFound):
+            return true
+        case (.pukNotFound, .pukNotFound):
+            return true
+        case (.duplicatedObjects, .duplicatedObjects):
+            return true
+        case (.dfNameExists, .dfNameExists):
+            return true
+        case (.offsetTooBig, .offsetTooBig):
+            return true
+        case (.instructionNotSupported, .instructionNotSupported):
+            return true
+        case (.customError, .customError):
+            return true
+        case (.ok, .ok):
+            return true
+        default:
+            return false
+        }
+    }
     // swiftlint:disable:previous type_body_length
     /// (0x9000)
     case success
@@ -260,6 +505,8 @@ public enum ResponseStatus {
     case customError
     /// (0x9900)
     case ok
+    
+    case unknownError(UInt16)
 
     /// Code belonging to the status
     public var code: UInt16 {
@@ -381,6 +628,7 @@ public enum ResponseStatus {
         case .offsetTooBig: return 0x6B00
         case .instructionNotSupported: return 0x6D00
         case .customError: return 0x0
+        case .unknownError(let sw): return sw
         case .ok: return 0x9900
         }
     }
