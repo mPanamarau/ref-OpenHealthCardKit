@@ -258,6 +258,8 @@ public enum ResponseStatus {
     case instructionNotSupported
     /// (0x0000)
     case customError
+    /// (0x9900)
+    case ok
 
     /// Code belonging to the status
     public var code: UInt16 {
@@ -379,6 +381,7 @@ public enum ResponseStatus {
         case .offsetTooBig: return 0x6B00
         case .instructionNotSupported: return 0x6D00
         case .customError: return 0x0
+        case .ok: return 0x9900
         }
     }
 }
