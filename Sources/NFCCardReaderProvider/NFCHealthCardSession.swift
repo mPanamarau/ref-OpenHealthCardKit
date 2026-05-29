@@ -117,6 +117,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
     private var operationContinuation: OperationCheckedContinuation?
     private let continuationLock = NSLock()
     private let tagDetected: () -> Void
+    private let force9900AsSuccessForPace: (() -> Void)?
 
     private let messages: Messages
     private let can: String
@@ -142,6 +143,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
         on queue: DispatchQueue = .global(qos: .userInitiated),
         messages: Messages,
         can: String,
+        force9900AsSuccessForPace: (() -> Void)? = nil,
         tagDetected: @escaping () -> Void = {},
         operation: @escaping ((NFCHealthCardSessionHandle) async throws -> Output)
     ) {
@@ -149,6 +151,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
         self.can = can
         self.operation = operation
         self.tagDetected = tagDetected
+        self.force9900AsSuccessForPace = force9900AsSuccessForPace
         super.init()
 
         guard let mNFCReaderSession = NFCTagReaderSession(
@@ -279,7 +282,7 @@ public class NFCHealthCardSession<Output>: NSObject, NFCTagReaderSessionDelegate
 
             let secureHealthCard: HealthCardType
             do {
-                secureHealthCard = try await card.openSecureSessionAsync(can: can)
+                secureHealthCard = try await card.openSecureSessionAsync(can: can, force9900AsSuccess: force9900AsSuccessForPace)
             } catch let error as CoreNFCError {
                 safeResumeContinuation(with: .failure(NFCHealthCardSessionError.coreNFC(error)))
                 session.invalidate(errorMessage: error.localizedDescription)

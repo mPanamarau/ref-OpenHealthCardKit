@@ -183,7 +183,8 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
             card: HealthCardType,
             can: CAN,
             writeTimeout: TimeInterval = 10,
-            readTimeout: TimeInterval = 10
+            readTimeout: TimeInterval = 10,
+            force9900AsSuccess: (() -> Void)?  = nil
         ) async throws -> SecureMessaging {
             switch self {
             case .idPaceEcdhGmAesCbcCmac128:
@@ -226,7 +227,8 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
                     pk2Pcd: pk2Pcd,
                     paceKey: paceKey,
                     writeTimeout: writeTimeout,
-                    readTimeout: readTimeout
+                    readTimeout: readTimeout,
+                    force9900AsSuccess: force9900AsSuccess
                 )
                 guard verifyMacPicc else {
                     throw Error.macPiccVerificationFailedLocally
@@ -500,7 +502,8 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
         pk2Pcd: BrainpoolP256r1.KeyExchange.PublicKey,
         paceKey: AES128PaceKey,
         writeTimeout: TimeInterval,
-        readTimeout: TimeInterval
+        readTimeout: TimeInterval,
+        force9900AsSuccess: (() -> Void)?  = nil
     ) async throws -> Bool {
         let algorithm = Algorithm.idPaceEcdhGmAesCbcCmac128
         let macPcd = try KeyAgreement.deriveMac(
@@ -518,12 +521,17 @@ public enum KeyAgreement { // swiftlint:disable:this type_body_length
             writeTimeout: writeTimeout,
             readTimeout: readTimeout
         )
-        if macPiccResponse.responseStatus == .authenticationFailure {
-            throw Error.macPcdVerificationFailedOnCard
+        
+        if macPiccResponse.responseStatus == .success {
+               // do nothing, skip futher validation check
+        } else if macPiccResponse.responseStatus == .ok, let force9900AsSuccess {
+            force9900AsSuccess()
+        } else {
+            if macPiccResponse.responseStatus != .success {
+                throw Error.macPcdVerificationFailedOnCard
+            }
         }
-        if macPiccResponse.responseStatus != .success {
-            throw Error.macPcdVerificationFailedOnCard
-        }
+        
         guard let macPiccResponseData = macPiccResponse.data else {
             throw Error.unexpectedFormedAnswerFromCard
         }

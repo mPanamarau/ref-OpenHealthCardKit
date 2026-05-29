@@ -109,7 +109,8 @@ extension CardType {
     public func openSecureSessionAsync(
         can: CAN,
         writeTimeout: TimeInterval = 30,
-        readTimeout: TimeInterval = 30
+        readTimeout: TimeInterval = 30,
+        force9900AsSuccess: (() -> Void)?  = nil
     ) async throws -> SecureHealthCardType {
         CommandLogger.commands.append(Command(message: "Open secure Session", type: .description))
         let channel = try openBasicChannel()
@@ -129,7 +130,8 @@ extension CardType {
             card: healthCard,
             can: can,
             writeTimeout: writeTimeout,
-            readTimeout: readTimeout
+            readTimeout: readTimeout,
+            force9900AsSuccess: force9900AsSuccess
         )
         return SecureHealthCard(session: sessionKey, card: healthCard)
     }
@@ -188,13 +190,15 @@ extension CardType {
     public func openSecureSessionAsync(
         can: String,
         writeTimeout: TimeInterval = 30,
-        readTimeout: TimeInterval = 30
+        readTimeout: TimeInterval = 30,
+        force9900AsSuccess: (() -> Void)?  = nil
     ) async throws -> SecureHealthCardType {
         let parsedCan = try CAN.from(Data(can.utf8))
         return try await openSecureSessionAsync(
             can: parsedCan,
             writeTimeout: writeTimeout,
-            readTimeout: readTimeout
+            readTimeout: readTimeout,
+            force9900AsSuccess: force9900AsSuccess
         )
     }
 }
